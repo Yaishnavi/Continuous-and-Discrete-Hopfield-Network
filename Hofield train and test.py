@@ -1,8 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
 """
-Created on Tue Dec 26 13:42:10 2017
-
 @author: vaishnaviy
 """
 import numpy as np
