@@ -4,12 +4,12 @@ Author : Vaishnavi Yeruva
 vaishnaviy2@gmail.com
 *************************************************************************
 
-This Python code is a simple implementation of Hopfield neural network for continious and discrete input.\n
-\n
-Instructions:\n
+This Python code is a simple implementation of Hopfield neural network for continious and discrete input.
+
+Instructions:
     
 Training
-run: weight = hopfield_train(train_input, learning rule)\n
+run: weight = hopfield_train(train_input, learning rule)
         train_input size  = number of patterns x length of each pattern.
         learning rule = "hebbian" or "pseudo-inverse" or "storkey".
         weight = output weight matrix.
