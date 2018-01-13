@@ -1,8 +1,36 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
+Created on Tue Dec 26 13:42:10 2017
 @author: vaishnaviy
+
+Instructions:
+    
+Training
+run: weight = hopfield_train(train_input, learning rule)
+        train_input size  = number of patterns x length of each pattern.
+        learning rule = "hebbian" or "pseudo-inverse" or "storkey".
+        weight = output weight matrix.
+        
+Testing
+run: retrieved_output, i = hopfield_retrieval(test_input, weight, n_iter, activation):
+        test_input = an array of single test pattern.
+        weight = trained weight matrix.
+        n_iter = choose the maximum number of iterations (very high for continuous case).
+        activation = "discrete" or "sigmoid" or "tanh" or "ReLU".
+        The value of input for discrete case is {+1,-1}.
+        retrieved_output = The retrieved pattern after n_iter or on reaching stability.
+        Asynchronous retrieval. 
+        i = total number of iterations.
+
+Requirements:
+    Python 3.6
+    Numpy 
 """
 import numpy as np
 import sys
+import numpy.matlib as matlib
+
 
 def discrete(x):
     return np.sign(-0.1+ np.sign(x))
@@ -27,8 +55,8 @@ def hopfield_train(train_input, learning_rule):
             wmat = np.divide(np.matmul(train_input[:,v], train_input[:,v].T),n)
             for v in range(1, n_pat):
                 x = train_input[:,v]
-                h = np.matmul(wmat,np.matlib.repmat(x,1,n)) - np.matlib.repmat(np.multiply(np.diag(wmat),x),1,n) - np.matmul(wmat, np.diag(x))
-                wmat = wmat + np.divide(np.matmul(x,x.T),n) - np.divide(np.matmul(np.diag(x),h.T),n) - np.divide(np.matmul(h,np.diag(x)),n)
+                h = np.matmul(wmat,matlib.repmat(x,1,n)) - matlib.repmat((np.diag(wmat)*x),1,n) - np.matmul(wmat, np.diag(np.asarray(x).ravel()))
+                wmat = wmat + np.divide(np.matmul(x,x.T),n) - np.divide(np.matmul(np.diag(np.asarray(x).ravel()),h.T),n) - np.divide(np.matmul(h,np.diag(np.asarray(x).ravel())),n)
             weight = wmat
         else:
             sys.exit("Invalid Learning Rule")
@@ -58,11 +86,11 @@ def hopfield_retrieval(test_input, weight, n_iter, activation):
     while i<=n_iter:
         for k in np.random.permutation(n) :
             if (weight[k,].any()!=0.0):
-                temp[k] = active(np.matmul(weight[k,],temp))  
+                temp[k] = active(np.matmul(weight[k,],temp)) 
         if (temp==retrieved_output).all():
             break
         retrieved_output = temp
         i = i+1
        
-    return retrieved_output
+    return retrieved_output, i
 
